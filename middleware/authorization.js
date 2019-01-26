@@ -30,6 +30,7 @@ var authNurse = (req, res, next) => {
             return res.status(401).send();
         }
 
+        req.nurseEmail = decodedUser.email;
         next();
     });
 };
