@@ -12,10 +12,51 @@ router.post("/add", authNurse, (req, res) => {
     }
     bag.email = req.nurseEmail;
 
-    db.addBag(bag);
+    db.addBag(bag, (errorMessage, statusCode) => {
+        if (errorMessage) {
+            return res.status(statusCode).send({ errorMessage });
+        }
 
-
+        res.status(200).send();
+    });
 });
+
+router.get("/expired", authNurse, (req, res) => {
+    db.getExpiredBags((errorMessage, statusCode, expiredBags) => {
+        if (errorMessage) {
+            return res.status(statusCode).send({ errorMessage });
+        }
+
+        res.send({ expiredBags });
+    });
+});
+
+router.get("/:type", authNurse, (req, res) => {
+    var type = req.params.type;
+    if (!(["A", "B", "AB", "O"].includes(type))) {
+        return res.status(400).send({ errorMessage: "invalid blood type" });
+    }
+    db.getBagsOfType(type, (errorMessage, statusCode, bags) => {
+        if (errorMessage) {
+            return res.status(statusCode).send({ errorMessage });
+        }
+
+        res.status(200).send({ bags });
+    });
+});
+
+router.delete("/:id", authNurse, (req, res) => {
+    var id = req.params.id;
+    db.deleteBagById(id, (errorMessage, statusCode) => {
+        if (errorMessage) {
+            return res.status(statusCode).send({ errorMessage });
+        }
+
+        res.send();
+    });
+});
+
+
 
 
 

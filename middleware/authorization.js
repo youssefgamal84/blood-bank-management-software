@@ -35,7 +35,25 @@ var authNurse = (req, res, next) => {
     });
 };
 
+var authTech = (req, res, next) => {
+    token = req.get('x-auth');
+    jwt.verify(token, SECRET, {}, (err, decodedUser) => {
+
+        if (err) {
+            return res.status(401).send();
+        }
+        if (decodedUser.job !== constants.USER_TECH) {
+            console.log(decodedUser);
+            return res.status(401).send();
+        }
+
+        req.techEmail = decodedUser.email;
+        next();
+    });
+};
+
 module.exports = {
     authAdmin,
-    authNurse
+    authNurse,
+    authTech
 }
