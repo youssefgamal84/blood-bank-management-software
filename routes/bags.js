@@ -19,6 +19,19 @@ router.get("/expired", authNurse, (req, res) => {
     db.getExpiredBags(callback(req, res, "expiredBags"));
 });
 
+router.post("/receive", authNurse, (req, res) => {
+    var receiving = _.pick(req.body, ["pssn", "bid", "doctor_id"]);
+    if (!receiving.pssn || !receiving.bid || !receiving.doctor_id) {
+        return res.status(400).send({ errorMessage: "missing data" });
+    }
+    receiving.email = req.nurseEmail;
+    db.addReceiving(receiving, callback(req, res));
+});
+
+router.patch("/set-complications/:id", authNurse, (req, res) => {
+    db.setComplications(req.params.id, callback(req, res));
+});
+
 router.get("/:type", authNurse, (req, res) => {
     var type = req.params.type;
     if (!(["A", "B", "AB", "O"].includes(type))) {

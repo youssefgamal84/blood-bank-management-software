@@ -88,6 +88,45 @@ var addTest = (id, test, callback) => {
         })
 };
 
+var addReceiving = (receiving, callback) => {
+    connection.query('INSERT INTO receive(pssn,bid,doctor_id,n_email) VALUES ( ? , ? , ? , ?)',
+        [receiving.pssn, receiving.bid, receiving.doctor_id, receiving.email], (err, result) => {
+            if (err) {
+                if (err.code == "ER_NO_REFERENCED_ROW_2") {
+                    return callback("this id doesn't exist", 400);
+                }
+                if (err.code == "ER_DUP_ENTRY") {
+                    return callback("this id is already in the receivings", 400)
+                }
+                console.log(err);
+                return callback("unknown error happened", 500);
+            }
+
+            connection.query('UPDATE bags SET used = 1 WHERE id = ?', [receiving.bid], (err, result) => {
+                if (err) {
+                    console.log(err);
+                    return callback("unknown error happened", 500);
+                }
+
+                callback();
+            });
+        });
+};
+
+var setComplications = (id, callback) => {
+    connection.query('UPDATE receive SET complications=1 WHERE bid = ? ', [id], (err, result) => {
+        if (err) {
+            console.log(err);
+            return callback("unknown error happened", 500);
+        }
+        if (result.affectedRows === 0) {
+            return callback("no bag exist", 404);
+        }
+
+        callback();
+    });
+};
+
 
 module.exports = {
     addBag,
@@ -95,5 +134,7 @@ module.exports = {
     deleteBagById,
     getExpiredBags,
     setSampledById,
-    addTest
+    addTest,
+    addReceiving,
+    setComplications
 }
