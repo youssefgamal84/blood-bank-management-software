@@ -3,7 +3,7 @@ const router = express.Router();
 const { authNurse } = require("../middleware/authorization");
 const _ = require("lodash");
 const db = require("../db/bag-queries");
-
+const callback = require("./standardCallback");
 
 router.post("/add", authNurse, (req, res) => {
     var bag = _.pick(req.body, ["rh", "type", "dssn"]);
@@ -12,23 +12,11 @@ router.post("/add", authNurse, (req, res) => {
     }
     bag.email = req.nurseEmail;
 
-    db.addBag(bag, (errorMessage, statusCode) => {
-        if (errorMessage) {
-            return res.status(statusCode).send({ errorMessage });
-        }
-
-        res.status(200).send();
-    });
+    db.addBag(bag, callback(req, res))
 });
 
 router.get("/expired", authNurse, (req, res) => {
-    db.getExpiredBags((errorMessage, statusCode, expiredBags) => {
-        if (errorMessage) {
-            return res.status(statusCode).send({ errorMessage });
-        }
-
-        res.send({ expiredBags });
-    });
+    db.getExpiredBags(callback(req, res, "expiredBags"));
 });
 
 router.get("/:type", authNurse, (req, res) => {
@@ -36,24 +24,12 @@ router.get("/:type", authNurse, (req, res) => {
     if (!(["A", "B", "AB", "O"].includes(type))) {
         return res.status(400).send({ errorMessage: "invalid blood type" });
     }
-    db.getBagsOfType(type, (errorMessage, statusCode, bags) => {
-        if (errorMessage) {
-            return res.status(statusCode).send({ errorMessage });
-        }
-
-        res.status(200).send({ bags });
-    });
+    db.getBagsOfType(type, callback(req, res, "bags"));
 });
 
 router.delete("/:id", authNurse, (req, res) => {
     var id = req.params.id;
-    db.deleteBagById(id, (errorMessage, statusCode) => {
-        if (errorMessage) {
-            return res.status(statusCode).send({ errorMessage });
-        }
-
-        res.send();
-    });
+    db.deleteBagById(id, callback(req, res));
 });
 
 

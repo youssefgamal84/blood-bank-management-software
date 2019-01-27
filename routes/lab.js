@@ -3,17 +3,11 @@ const router = express.Router();
 const { authTech } = require("../middleware/authorization");
 const _ = require("lodash");
 const db = require("../db/bag-queries");
-
+const callback = require("./standardCallback");
 
 router.post("/sample/:id", authTech, (req, res) => {
     var id = req.params.id;
-    db.setSampledById(id, (errorMessage, statusCode) => {
-        if (errorMessage) {
-            return res.status(statusCode).send({ errorMessage });
-        }
-
-        res.send();
-    });
+    db.setSampledById(id, callback(req, res));
 });
 
 router.post("/test/:id", authTech, (req, res) => {
@@ -26,13 +20,7 @@ router.post("/test/:id", authTech, (req, res) => {
 
     test.email = req.techEmail;
 
-    db.addTest(id, test, (errorMessage, statusCode) => {
-        if (errorMessage) {
-            return res.status(statusCode).send({ errorMessage });
-        }
-
-        res.send();
-    });
+    db.addTest(id, test, callback(req, res));
 });
 
 
