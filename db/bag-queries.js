@@ -50,7 +50,7 @@ var getExpiredBags = (callback) => {
 };
 
 var getUnsampledBags = (callback) => {
-    connection.query('SELECT * FROM bags WHERE sampled=0', (err, result) => {
+    connection.query('SELECT * FROM bags WHERE sampled=0 AND DATE(e_date)>CURDATE()', (err, result) => {
         if (err) {
             console.log(err);
             return callback("unknown error happened", 500);

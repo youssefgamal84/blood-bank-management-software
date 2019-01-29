@@ -19,6 +19,7 @@ var authAdmin = (req, res, next) => {
 };
 
 var authNurse = (req, res, next) => {
+    console.log("AUTH NURSE");
     token = req.headers['x-auth'];
     console.log(token);
     jwt.verify(token, SECRET, {}, (err, decodedUser) => {
@@ -37,6 +38,7 @@ var authNurse = (req, res, next) => {
 };
 
 var authTech = (req, res, next) => {
+    console.log("AUTH TECH");
     token = req.get('x-auth');
     jwt.verify(token, SECRET, {}, (err, decodedUser) => {
 

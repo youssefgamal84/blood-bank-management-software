@@ -19,6 +19,9 @@ router.get("/expired", authNurse, (req, res) => {
     db.getExpiredBags(callback(req, res, "expiredBags"));
 });
 
+router.get("/unsampled", authTech, (req, res) => {
+    db.getUnsampledBags(callback(req, res));
+});
 router.post("/receive", authNurse, (req, res) => {
     var receiving = _.pick(req.body, ["pssn", "bid", "doctor_id"]);
     if (!receiving.pssn || !receiving.bid || !receiving.doctor_id) {
@@ -45,9 +48,7 @@ router.delete("/:id", authNurse, (req, res) => {
     db.deleteBagById(id, callback(req, res));
 });
 
-router.get("/unsampled", authTech, (req, res) => {
-    db.getUnsampledBags(callback(req, res));
-});
+
 
 
 
