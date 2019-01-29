@@ -57,7 +57,7 @@ router.post("/login", (req, res) => {
             if (err) {
                 return res.status(500).send({ errorMessage: "unknown server error happened!" });
             }
-            res.status(200).send({ token });
+            res.status(200).send({ token, job: userAllAttributes.job, name: userAllAttributes.name });
         });
     });
 });

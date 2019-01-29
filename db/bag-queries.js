@@ -16,7 +16,7 @@ var addBag = (bag, callback) => {
 };
 
 var getBagsOfType = (type, callback) => {
-    connection.query('SELECT * FROM bags WHERE type= ? AND used=0 AND valid=1 AND DATE(e_date)>CURDATE()', [type], (err, result) => {
+    connection.query('SELECT type, dssn , rh , id , e_date, e_email FROM bags WHERE type= ? AND used=0 AND valid=1 AND DATE(e_date)>CURDATE()', [type], (err, result) => {
         if (err) {
             return callback("unknown error happened", 500);
         }
@@ -39,6 +39,18 @@ var deleteBagById = (id, callback) => {
 
 var getExpiredBags = (callback) => {
     connection.query('SELECT * FROM bags WHERE DATE(e_date)<=CURDATE() OR valid=0', (err, result) => {
+        if (err) {
+            console.log(err);
+            return callback("unknown error happened", 500);
+        }
+
+        callback(undefined, undefined, result);
+    });
+
+};
+
+var getUnsampledBags = (callback) => {
+    connection.query('SELECT * FROM bags WHERE sampled=0', (err, result) => {
         if (err) {
             console.log(err);
             return callback("unknown error happened", 500);
@@ -136,5 +148,6 @@ module.exports = {
     setSampledById,
     addTest,
     addReceiving,
-    setComplications
+    setComplications,
+    getUnsampledBags
 }

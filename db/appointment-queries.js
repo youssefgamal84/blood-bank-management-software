@@ -2,9 +2,10 @@ const connection = require("./db");
 
 
 var addAppointment = (appointment, callback) => {
-    connection.query('SELECT count(ssn) as c FROM appointment WHERE day = ? AND hour = ? ', [appointment.day, appointment.hour]
+    connection.query('SELECT count(email) as c FROM appointment WHERE day = ? AND hour = ? ', [appointment.day, appointment.hour]
         , (err, result) => {
             if (err) {
+                console.log(err);
                 return callback("unknown error happened", 500);
             }
             var count = result[0].c;
@@ -12,8 +13,8 @@ var addAppointment = (appointment, callback) => {
                 return callback("This appointment is currently busy please choose another", 400);
             }
 
-            connection.query('INSERT INTO appointment(ssn,email,name,day,hour) VALUE( ? , ? , ? , ? , ?)',
-                [appointment.ssn, appointment.email, appoint.name, appointment.day, appointment.hour], (err, result) => {
+            connection.query('INSERT INTO appointment(email,name,day,hour) VALUE( ? , ? , ? , ? )',
+                [appointment.email, appointment.name, appointment.day, appointment.hour], (err, result) => {
                     if (err) {
                         if (err.code === 'ER_DUP_ENTRY') {
                             return callback("This E-mail or SSN Already exists!", 400);

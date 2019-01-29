@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { authNurse } = require("../middleware/authorization");
+const { authNurse, authTech } = require("../middleware/authorization");
 const _ = require("lodash");
 const db = require("../db/bag-queries");
 const callback = require("./standardCallback");
@@ -43,6 +43,10 @@ router.get("/:type", authNurse, (req, res) => {
 router.delete("/:id", authNurse, (req, res) => {
     var id = req.params.id;
     db.deleteBagById(id, callback(req, res));
+});
+
+router.get("/unsampled", authTech, (req, res) => {
+    db.getUnsampledBags(callback(req, res));
 });
 
 

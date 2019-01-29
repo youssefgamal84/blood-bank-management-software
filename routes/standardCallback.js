@@ -5,7 +5,7 @@ var callback = (req, res, dataName) => {
         }
         var object = {};
         object[dataName] = data;
-        res.send(object);
+        res.send(data);
     }
 
     return toreturn;

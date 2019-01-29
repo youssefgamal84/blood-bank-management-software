@@ -40,7 +40,7 @@ var checkUser = (user, callback) => {
         hashedPassword = result[0].password;
         bcrypt.compare(user.password, hashedPassword).then((isMatched) => {
             if (!isMatched) {
-                return callback(undefined, 401, false);
+                return callback("The password is wrong", 401, false);
             }
             callback(undefined, 200, result[0]);
         }).catch((e) => {
