@@ -63,11 +63,21 @@ var removeUserByEmail = (email, callback) => {
         callback();
 
     });
-}
+};
+
+var getAllUsers = (callback) => {
+    connection.query('SELECT email, job, sex, ssn, name FROM users', (err, result) => {
+        if (err) {
+            return callback("unknown error happened", 500);
+        }
+        callback(null, 200, result);
+    });
+};
 
 
 module.exports = {
     addUser,
     checkUser,
-    removeUserByEmail
+    removeUserByEmail,
+    getAllUsers
 }

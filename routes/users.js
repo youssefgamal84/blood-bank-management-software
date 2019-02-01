@@ -6,6 +6,7 @@ const db = require("../db/user-queries");
 const _ = require("lodash");
 const { authAdmin } = require("../middleware/authorization");
 const SECRET = require("../secret");
+const callback = require("./standardCallback");
 
 
 
@@ -72,6 +73,10 @@ router.delete("/:email", authAdmin, (req, res) => {
         res.status(200).send();
     });
 
+});
+
+router.get("/", authAdmin, (req, res) => {
+    db.getAllUsers(callback(req, res, "users"));
 });
 
 module.exports = router;
